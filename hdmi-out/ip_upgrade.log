@@ -1,0 +1,337 @@
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:18 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_xlconstant_1_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_xlconstant_1_0 (xilinx.com:ip:xlconstant:1.1) from (Rev. 3) to (Rev. 5)
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:18 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_xlconstant_0_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_xlconstant_0_0 (xilinx.com:ip:xlconstant:1.1) from (Rev. 3) to (Rev. 5)
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:18 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_v_tc_0_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_v_tc_0_0 (xilinx.com:ip:v_tc:6.1) from (Rev. 10) to (Rev. 12)
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:18 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_v_axi4s_vid_out_0_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_v_axi4s_vid_out_0_0 (xilinx.com:ip:v_axi4s_vid_out:4.0) from (Rev. 6) to (Rev. 9)
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:17 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_processing_system7_0_axi_periph_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_processing_system7_0_axi_periph_0 (xilinx.com:ip:axi_interconnect:2.1) from (Rev. 14) to (Rev. 18)
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:17 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_processing_system7_0_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_processing_system7_0_0 (xilinx.com:ip:processing_system7:5.5) from (Rev. 5) to (Rev. 6)
+
+2. Upgrade messages
+-------------------
+
+WARNING: upgrade cannot add parameter PCW_TRACE_INTERNAL_WIDTH with default value 32 : a parameter called PCW_TRACE_INTERNAL_WIDTH already exists in processing_system7_v5_5
+WARNING: upgrade cannot add parameter PCW_USE_AXI_NONSECURE with default value 0 : a parameter called PCW_USE_AXI_NONSECURE already exists in processing_system7_v5_5
+WARNING: upgrade cannot add parameter PCW_EN_PTP_ENET0 with default value 1 : a parameter called PCW_EN_PTP_ENET0 already exists in processing_system7_v5_5
+WARNING: upgrade cannot add parameter PCW_EN_PTP_ENET0 with default value 1 : a parameter called PCW_EN_PTP_ENET0 already exists in processing_system7_v5_5
+WARNING: upgrade cannot add parameter PCW_GP0_NUM_WRITE_THREADS with default value 4 : a parameter called PCW_GP0_NUM_WRITE_THREADS already exists in processing_system7_v5_5
+WARNING: upgrade cannot add parameter PCW_GP0_NUM_READ_THREADS with default value 4 : a parameter called PCW_GP0_NUM_READ_THREADS already exists in processing_system7_v5_5
+WARNING: upgrade cannot add parameter PCW_GP1_NUM_WRITE_THREADS with default value 4 : a parameter called PCW_GP1_NUM_WRITE_THREADS already exists in processing_system7_v5_5
+WARNING: upgrade cannot add parameter PCW_GP1_NUM_READ_THREADS with default value 4 : a parameter called PCW_GP1_NUM_READ_THREADS already exists in processing_system7_v5_5
+WARNING: upgrade cannot add parameter PCW_GP0_EN_MODIFIABLE_TXN with default value 0 : a parameter called PCW_GP0_EN_MODIFIABLE_TXN already exists in processing_system7_v5_5
+WARNING: upgrade cannot add parameter PCW_GP1_EN_MODIFIABLE_TXN with default value 0 : a parameter called PCW_GP1_EN_MODIFIABLE_TXN already exists in processing_system7_v5_5
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:17 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_proc_sys_reset_1_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_proc_sys_reset_1_0 (xilinx.com:ip:proc_sys_reset:5.0) from (Rev. 11) to (Rev. 12)
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:17 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_proc_sys_reset_0_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_proc_sys_reset_0_0 (xilinx.com:ip:proc_sys_reset:5.0) from (Rev. 11) to (Rev. 12)
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:17 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_axis_subset_converter_0_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_axis_subset_converter_0_0 (xilinx.com:ip:axis_subset_converter:1.1) from (Rev. 13) to (Rev. 17)
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:17 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_axi_vdma_0_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_axi_vdma_0_0 (xilinx.com:ip:axi_vdma:6.3) from (Rev. 1) to (Rev. 5)
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:17 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_axi_mem_intercon_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_axi_mem_intercon_0 (xilinx.com:ip:axi_interconnect:2.1) from (Rev. 14) to (Rev. 18)
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:17 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_axi_gpio_sw_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_axi_gpio_sw_0 (xilinx.com:ip:axi_gpio:2.0) from (Rev. 15) to (Rev. 19)
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:17 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_axi_gpio_led_0'
+
+1. Summary
+----------
+
+CAUTION (success, with warnings) in the upgrade of hdmi_out_axi_gpio_led_0 (xilinx.com:ip:axi_gpio:2.0) from (Rev. 15) to (Rev. 19)
+
+After upgrade, an IP may have parameter and port differences compared to the original customization. Please review the parameters within the IP customization GUI to ensure proper functionality. Also, please review the updated IP instantiation template to ensure proper connectivity, and update your design if required.
+
+2. Connection Warnings
+----------------------
+
+Detected external port differences while upgrading 'hdmi_out_axi_gpio_led_0'. These changes may impact your design.
+
+
+-Upgrade has removed port 'gpio_io_i'
+
+-Upgrade has removed port 'gpio_io_t'
+
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:17 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_axi_gpio_hdmi_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_axi_gpio_hdmi_0 (xilinx.com:ip:axi_gpio:2.0) from (Rev. 15) to (Rev. 19)
+
+
+
+
+
+
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.2 (win64) Build 2258646 Thu Jun 14 20:03:12 MDT 2018
+| Date         : Mon Jan  3 10:22:17 2022
+| Host         : LAPTOP-PO14UA94 running 64-bit major release  (build 9200)
+| Command      : upgrade_ip
+| Device       : xc7z010clg400-1
+------------------------------------------------------------------------------------
+
+Upgrade Log for IP 'hdmi_out_axi_gpio_btn_0'
+
+1. Summary
+----------
+
+SUCCESS in the upgrade of hdmi_out_axi_gpio_btn_0 (xilinx.com:ip:axi_gpio:2.0) from (Rev. 15) to (Rev. 19)
+

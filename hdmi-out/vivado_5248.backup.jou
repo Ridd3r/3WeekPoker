@@ -1,0 +1,94 @@
+#-----------------------------------------------------------
+# Vivado v2018.2 (64-bit)
+# SW Build 2258646 on Thu Jun 14 20:03:12 MDT 2018
+# IP Build 2256618 on Thu Jun 14 22:10:49 MDT 2018
+# Start of session at: Thu Jan 13 14:25:19 2022
+# Process ID: 5248
+# Current directory: C:/Users/JayHo/Desktop/3/hdmi-out
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent18336 C:\Users\JayHo\Desktop\3\hdmi-out\hdmi-out.xpr
+# Log file: C:/Users/JayHo/Desktop/3/hdmi-out/vivado.log
+# Journal file: C:/Users/JayHo/Desktop/3/hdmi-out\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Users/JayHo/Desktop/3/hdmi-out/hdmi-out.xpr
+update_compile_order -fileset sources_1
+open_bd_design {C:/Users/JayHo/Desktop/3/hdmi-out/hdmi-out.srcs/sources_1/bd/hdmi_out/hdmi_out.bd}
+reset_run impl_1 -prev_step 
+launch_runs impl_1 -to_step write_bitstream -jobs 8
+wait_on_run impl_1
+open_hw
+connect_hw_server
+open_hw_target
+set_property PROGRAM.FILE {C:/Users/JayHo/Desktop/3/hdmi-out/hdmi-out.runs/impl_1/hdmi_out_wrapper.bit} [get_hw_devices xc7z010_1]
+current_hw_device [get_hw_devices xc7z010_1]
+refresh_hw_device -update_hw_probes false [lindex [get_hw_devices xc7z010_1] 0]
+set_property PROBES.FILE {} [get_hw_devices xc7z010_1]
+set_property FULL_PROBES.FILE {} [get_hw_devices xc7z010_1]
+set_property PROGRAM.FILE {C:/Users/JayHo/Desktop/3/hdmi-out/hdmi-out.runs/impl_1/hdmi_out_wrapper.bit} [get_hw_devices xc7z010_1]
+program_hw_devices [get_hw_devices xc7z010_1]
+refresh_hw_device [lindex [get_hw_devices xc7z010_1] 0]
+file copy -force C:/Users/JayHo/Desktop/3/hdmi-out/hdmi-out.runs/impl_1/hdmi_out_wrapper.sysdef C:/Users/JayHo/Desktop/3/hdmi-out/hdmi-out.sdk/hdmi_out_wrapper.hdf
+
+launch_sdk -workspace C:/Users/JayHo/Desktop/3/hdmi-out/hdmi-out.sdk -hwspec C:/Users/JayHo/Desktop/3/hdmi-out/hdmi-out.sdk/hdmi_out_wrapper.hdf
+close_project
+create_project SoundProject C:/Users/JayHo/Desktop/3/SoundProject -part xc7z010clg400-1
+set_property board_part digilentinc.com:zybo:part0:2.0 [current_project]
+set_property target_language VHDL [current_project]
+create_bd_design "Sound"
+update_compile_order -fileset sources_1
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:i2s_transmitter:1.0 i2s_transmitter_0
+endgroup
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:axi_fifo_mm_s:4.1 axi_fifo_mm_s_0
+endgroup
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 clk_wiz_0
+endgroup
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:5.5 processing_system7_0
+endgroup
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 proc_sys_reset_0
+endgroup
+set_property location {1 15 101} [get_bd_cells proc_sys_reset_0]
+set_property location {1 -7 -475} [get_bd_cells processing_system7_0]
+set_property location {4 1258 44} [get_bd_cells i2s_transmitter_0]
+set_property location {4 1324 -401} [get_bd_cells clk_wiz_0]
+set_property location {2 904 -222} [get_bd_cells axi_fifo_mm_s_0]
+set_property location {2 976 -328} [get_bd_cells axi_fifo_mm_s_0]
+set_property -dict [list CONFIG.C_USE_RX_DATA {0} CONFIG.C_USE_TX_CTRL {0} CONFIG.C_TX_FIFO_PE_THRESHOLD {5} CONFIG.C_RX_FIFO_PE_THRESHOLD {2}] [get_bd_cells axi_fifo_mm_s_0]
+apply_bd_automation -rule xilinx.com:bd_rule:processing_system7 -config {make_external "FIXED_IO, DDR" apply_board_preset "1" Master "Disable" Slave "Disable" }  [get_bd_cells processing_system7_0]
+set_property -dict [list CONFIG.USE_SPREAD_SPECTRUM {false} CONFIG.USE_MIN_POWER {false} CONFIG.CLK_IN1_BOARD_INTERFACE {Custom} CONFIG.USE_INCLK_SWITCHOVER {false} CONFIG.CLK_IN2_BOARD_INTERFACE {Custom} CONFIG.RESET_BOARD_INTERFACE {Custom} CONFIG.CLK_OUT1_PORT {ClkAudio} CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {12.288} CONFIG.USE_LOCKED {true} CONFIG.JITTER_SEL {No_Jitter} CONFIG.SECONDARY_SOURCE {Single_ended_clock_capable_pin} CONFIG.CLKIN1_JITTER_PS {80.0} CONFIG.CLKIN2_JITTER_PS {133.33} CONFIG.CLKOUT1_REQUESTED_DUTY_CYCLE {50.0} CONFIG.MMCM_DIVCLK_DIVIDE {7} CONFIG.MMCM_BANDWIDTH {OPTIMIZED} CONFIG.MMCM_CLKFBOUT_MULT_F {42.750} CONFIG.MMCM_CLKIN1_PERIOD {8.000} CONFIG.MMCM_CLKIN2_PERIOD {13.333} CONFIG.MMCM_CLKOUT0_DIVIDE_F {62.125} CONFIG.MMCM_CLKOUT0_DUTY_CYCLE {0.500} CONFIG.CLKOUT1_JITTER {473.813} CONFIG.CLKOUT1_PHASE_ERROR {351.816}] [get_bd_cells clk_wiz_0]
+startgroup
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {Auto} Clk_slave {Auto} Clk_xbar {Auto} Master {/processing_system7_0/M_AXI_GP0} Slave {/i2s_transmitter_0/s_axi_ctrl} intc_ip {New AXI Interconnect} master_apm {0}}  [get_bd_intf_pins i2s_transmitter_0/s_axi_ctrl]
+apply_bd_automation -rule xilinx.com:bd_rule:clkrst -config {Clk "/processing_system7_0/FCLK_CLK0 (100 MHz)" }  [get_bd_pins i2s_transmitter_0/aud_mclk]
+apply_bd_automation -rule xilinx.com:bd_rule:axi4 -config { Clk_master {Auto} Clk_slave {Auto} Clk_xbar {Auto} Master {/processing_system7_0/M_AXI_GP0} Slave {/axi_fifo_mm_s_0/S_AXI} intc_ip {New AXI Interconnect} master_apm {0}}  [get_bd_intf_pins axi_fifo_mm_s_0/S_AXI]
+apply_bd_automation -rule xilinx.com:bd_rule:board -config { Manual_Source {Auto} rst_polarity {ACTIVE_HIGH}}  [get_bd_pins clk_wiz_0/reset]
+apply_bd_automation -rule xilinx.com:bd_rule:board -config { Board_Interface {sys_clock ( System Clock ) } Manual_Source {Auto}}  [get_bd_pins clk_wiz_0/clk_in1]
+endgroup
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 proc_sys_reset_1
+endgroup
+delete_bd_objs [get_bd_cells proc_sys_reset_1]
+set_property location {1.5 42 -469} [get_bd_cells processing_system7_0]
+set_property location {2 432 -431} [get_bd_cells ps7_0_axi_periph]
+set_property location {2 435 -380} [get_bd_cells ps7_0_axi_periph]
+set_property location {1 -58 44} [get_bd_cells proc_sys_reset_0]
+startgroup
+create_bd_cell -type ip -vlnv xilinx.com:ip:sim_rst_gen:1.0 sim_rst_gen_0
+endgroup
+delete_bd_objs [get_bd_cells sim_rst_gen_0]
+set_property location {4 961 -249} [get_bd_cells axi_fifo_mm_s_0]
+regenerate_bd_layout -routing
+delete_bd_objs [get_bd_intf_nets ps7_0_axi_periph_M00_AXI]
+delete_bd_objs [get_bd_intf_nets ps7_0_axi_periph_M01_AXI]
+connect_bd_intf_net -boundary_type upper [get_bd_intf_pins ps7_0_axi_periph/M00_AXI] [get_bd_intf_pins axi_fifo_mm_s_0/S_AXI]
+startgroup
+set_property -dict [list CONFIG.CLK_IN1_BOARD_INTERFACE {Custom}] [get_bd_cells clk_wiz_0]
+endgroup
+save_bd_design
+close_project
+create_project AudioDemo C:/Users/JayHo/Desktop/3/AudioDemo -part xc7z010clg400-1
+set_property board_part digilentinc.com:zybo:part0:2.0 [current_project]
+set_property target_language VHDL [current_project]

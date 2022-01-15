@@ -1,0 +1,20 @@
+#-----------------------------------------------------------
+# Vivado v2017.2 (64-bit)
+# SW Build 1909853 on Thu Jun 15 18:39:09 MDT 2017
+# IP Build 1909766 on Thu Jun 15 19:58:00 MDT 2017
+# Start of session at: Fri Dec 29 15:43:23 2017
+# Process ID: 13432
+# Current directory: C:/Users/Edward/AppData/Roaming/Xilinx/Vivado
+# Command line: vivado.exe -gui_launcher_event rodinguilauncherevent1624
+# Log file: C:/Users/Edward/AppData/Roaming/Xilinx/Vivado/vivado.log
+# Journal file: C:/Users/Edward/AppData/Roaming/Xilinx/Vivado\vivado.jou
+#-----------------------------------------------------------
+start_gui
+open_project C:/Programming/E17_02321/3w/vivado/hdmi-out/hdmi-out.xpr
+update_compile_order -fileset sources_1
+report_ip_status -name ip_status 
+upgrade_ip [get_ips  {hdmi_out_axi_mem_intercon_0 hdmi_out_axis_subset_converter_0_0 hdmi_out_processing_system7_0_0 hdmi_out_axi_gpio_hdmi_0 hdmi_out_axi_gpio_led_0 hdmi_out_xlconcat_0_0 hdmi_out_axi_gpio_btn_0 hdmi_out_axi_vdma_0_0 hdmi_out_processing_system7_0_axi_periph_0 hdmi_out_axi_gpio_sw_0 hdmi_out_proc_sys_reset_0_0 hdmi_out_xlconstant_0_0 hdmi_out_proc_sys_reset_1_0 hdmi_out_xlconstant_1_0 hdmi_out_v_axi4s_vid_out_0_0}] -log ip_upgrade.log
+export_ip_user_files -of_objects [get_ips {hdmi_out_axi_mem_intercon_0 hdmi_out_axis_subset_converter_0_0 hdmi_out_processing_system7_0_0 hdmi_out_axi_gpio_hdmi_0 hdmi_out_axi_gpio_led_0 hdmi_out_xlconcat_0_0 hdmi_out_axi_gpio_btn_0 hdmi_out_axi_vdma_0_0 hdmi_out_processing_system7_0_axi_periph_0 hdmi_out_axi_gpio_sw_0 hdmi_out_proc_sys_reset_0_0 hdmi_out_xlconstant_0_0 hdmi_out_proc_sys_reset_1_0 hdmi_out_xlconstant_1_0 hdmi_out_v_axi4s_vid_out_0_0}] -no_script -sync -force -quiet
+regenerate_bd_layout
+save_bd_design
+archive_project C:/Programming/E17_02321/3w/vivado/hdmi-out.xpr.zip -temp_dir C:/Programming/E17_02321/3w/tmp -force -exclude_run_results
