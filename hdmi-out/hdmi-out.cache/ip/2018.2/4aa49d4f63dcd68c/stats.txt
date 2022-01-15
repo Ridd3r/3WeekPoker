@@ -1,0 +1,4 @@
+NumberHits:0
+Timestamp: Mon Jan 10 10:31:26 UTC 2022
+VLNV: xilinx.com:ip:util_vector_logic:2.0
+SynthRuntime: 37

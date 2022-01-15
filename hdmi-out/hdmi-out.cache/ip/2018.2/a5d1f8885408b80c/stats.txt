@@ -1,0 +1,4 @@
+NumberHits:1
+Timestamp: Wed Jan 12 13:54:46 UTC 2022
+VLNV: xilinx.com:ip:axi_register_slice:2.1
+SynthRuntime: 39
