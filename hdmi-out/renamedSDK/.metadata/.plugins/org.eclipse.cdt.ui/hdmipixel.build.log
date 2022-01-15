@@ -1,0 +1,8 @@
+14:30:36 **** Incremental Build of configuration Debug for project hdmipixel ****
+make pre-build main-build 
+a9-linaro-pre-build-step
+' '
+make: Ingenting at gøre for 'main-build'.
+
+14:30:37 Build Finished (took 232ms)
+

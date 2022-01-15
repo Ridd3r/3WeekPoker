@@ -1,0 +1,45 @@
+/*
+ * main.c
+ Version 1.0
+ *
+ *  Created on: Jan 3, 2022
+ *      Author: gurk
+ */
+#include "graphics.h"
+#include "display_ctrl/display_ctrl.h"
+#include "math.h"
+
+
+/*DisplayCtrl dispCtrl;
+XAxiVdma vdma;*/
+
+int main(){
+	initialize();
+	//demoPrintTest(dispCtrl.framePtr[dispCtrl.curFrame], dispCtrl.vMode.width, dispCtrl.vMode.height, dispCtrl.stride);
+	//test1(dispCtrl.framePtr[dispCtrl.curFrame], dispCtrl.vMode.width, dispCtrl.vMode.height, dispCtrl.stride);
+	//drawSquare(dispCtrl.framePtr[dispCtrl.curFrame], 200, 300, 500, 0);
+/*	drawPixel(dispCtrl.framePtr[dispCtrl.curFrame], 10, 20, 0x00FF00);
+	drawPixel(dispCtrl.framePtr[dispCtrl.curFrame], 15, 25, 0xFFFF00);
+	drawPixel(dispCtrl.framePtr[dispCtrl.curFrame], 20, 30, 0xFF0000);
+	drawPixel(dispCtrl.framePtr[dispCtrl.curFrame], 25,35, 0x0000FF);*/
+
+	//testPattern(dispCtrl.framePtr[dispCtrl.curFrame], dispCtrl.vMode.width, dispCtrl.vMode.height, dispCtrl.stride);
+
+	//drawSquare(25, 30, 70, 80, 0xFFFF00);
+
+		placeMovableObject(1, 2, 1);
+		placeObject(1, 4, 1);
+		arrayContents();
+		//placeObject(25, 25, 2);
+		createBackground();
+		saveBackground();
+		while(1){
+			updateBackground();
+			drawLayer();
+			swapFrame();
+			getInput();
+		}
+	return 0;
+}
+
+

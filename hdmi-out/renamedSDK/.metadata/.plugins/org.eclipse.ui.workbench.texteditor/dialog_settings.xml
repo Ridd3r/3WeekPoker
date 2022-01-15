@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="false" key="isRegEx"/>
+		<item value="Wins on" key="selection"/>
+		<item value="false" key="casesensitive"/>
+		<item value="false" key="incremental"/>
+		<item value="true" key="wrap"/>
+		<item value="false" key="wholeword"/>
+		<list key="findhistory">
+			<item value="Wins on"/>
+			<item value="rand"/>
+			<item value="compareTwoHands"/>
+			<item value="gene"/>
+			<item value="srand"/>
+			<item value="swap"/>
+			<item value="pixel"/>
+			<item value="initializePlayerEmblems"/>
+		</list>
+		<list key="replacehistory">
+			<item value="scanf(&quot;%d&quot;, &amp;userInput);printf(&quot;%d\n&quot;, userInput);"/>
+			<item value="&#x09;scanf(&quot;%d&quot;, &amp;userInput);"/>
+			<item value="scanf(&quot;%d&quot;, &amp;userInput);"/>
+			<item value="scanf"/>
+			<item value="xil_scanf"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="336" key="DIALOG_WIDTH"/>
+		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-15|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+		<item value="548" key="DIALOG_HEIGHT"/>
+		<item value="214" key="DIALOG_X_ORIGIN"/>
+		<item value="295" key="DIALOG_Y_ORIGIN"/>
+	</section>
+</section>

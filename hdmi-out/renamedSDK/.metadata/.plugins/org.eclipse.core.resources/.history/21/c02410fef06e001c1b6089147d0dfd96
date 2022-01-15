@@ -1,0 +1,915 @@
+/*
+ * draw_square.c
+
+ *
+ *  Created on: Jan 3, 2022
+ *      Author: gurk
+ */
+
+#include "graphics.h"
+#include "display_ctrl/display_ctrl.h"
+#include <stdio.h>
+#include "xuartps.h"
+#include "math.h"
+#include <ctype.h>
+#include <stdlib.h>
+#include "xil_types.h"
+#include "xil_cache.h"
+#include "timer_ps/timer_ps.h"
+#include "xparameters.h"
+
+#define DYNCLK_BASEADDR XPAR_AXI_DYNCLK_0_BASEADDR
+#define VGA_VDMA_ID XPAR_AXIVDMA_0_DEVICE_ID
+#define DISP_VTC_ID XPAR_VTC_0_DEVICE_ID
+#define VID_VTC_IRPT_ID XPS_FPGA3_INT_ID
+#define VID_GPIO_IRPT_ID XPS_FPGA4_INT_ID
+#define SCU_TIMER_ID XPAR_SCUTIMER_DEVICE_ID
+#define UART_BASEADDR XPAR_PS7_UART_1_BASEADDR
+
+#define BLACK 0
+#define WHITE 0xFFFFFF
+#define RED 0xFF0000
+#define GREEN 0x00FF00
+#define POKERGREEN 0x003300
+#define POKERRED 0x660000
+#define BLUE 0x0000FF
+#define YELLOW 0xFFFF00
+#define MAROON 0x800000
+
+/* ------------------------------------------------------------ */
+/*				Global Variables								*/
+/* ------------------------------------------------------------ */
+
+/*
+ * Display Driver structs
+ */
+DisplayCtrl dispCtrl;
+XAxiVdma vdma;
+
+/*
+ * Framebuffers for video data
+ */
+u8  frameBuf[2][DEMO_MAX_FRAME] __attribute__((aligned(0x20)));
+u8 *pFrames[2]; //array of pointers to the frame buffers
+
+#define GRANUALITYWIDTH 640
+#define GRANUALITYHEIGHT 540
+
+
+
+struct Location {
+	int x;
+	int y;
+};
+struct Location location;
+
+//The different suits
+#define HEARTS 1
+#define CLUBS 2
+#define DIAMONDS 3
+#define SPADES 4
+
+
+u8 background[DEMO_MAX_FRAME];//to save background
+
+
+int graphicsArray[GRANUALITYHEIGHT][GRANUALITYWIDTH] = {0};
+int locationArray[GRANUALITYHEIGHT][GRANUALITYWIDTH] = {0};
+int cardGraphicArray[4][60][30];
+
+
+int currentPlayer = 0;
+int AmountOfPlayers = 4;
+
+
+
+/* ------------------------------------------------------------ */
+/*				Procedure Definitions							*/
+/* ------------------------------------------------------------ */
+
+void initialize(){
+	int Status;
+		XAxiVdma_Config *vdmaConfig;
+		int i;
+
+		/*
+		 * Initialize an array of pointers to the 2 frame buffers
+		 */
+		for (i = 0; i < DISPLAY_NUM_FRAMES; i++)
+		{
+			pFrames[i] = frameBuf[i];
+		}
+
+		/*
+		 * Initialize a timer used for a simple delay
+		 */
+		TimerInitialize(SCU_TIMER_ID);
+
+		/*
+		 * Initialize VDMA driver
+		 */
+		vdmaConfig = XAxiVdma_LookupConfig(VGA_VDMA_ID);
+		if (!vdmaConfig)
+		{
+			xil_printf("No video DMA found for ID %d\r\n", VGA_VDMA_ID);
+			return;
+		}
+		Status = XAxiVdma_CfgInitialize(&vdma, vdmaConfig, vdmaConfig->BaseAddress);
+		if (Status != XST_SUCCESS)
+		{
+			xil_printf("VDMA Configuration Initialization failed %d\r\n", Status);
+			return;
+		}
+
+		/*
+		 * Initialize the Display controller and start it
+		 */
+		Status = DisplayInitialize(&dispCtrl, &vdma, DISP_VTC_ID, DYNCLK_BASEADDR, pFrames, STRIDE);
+		if (Status != XST_SUCCESS)
+		{
+			xil_printf("Display Ctrl initialization failed during demo initialization%d\r\n", Status);
+			return;
+		}
+		DisplaySetMode(&dispCtrl, &VMODE_1920x1080);//set to 1080
+		Status = DisplayStart(&dispCtrl);
+		if (Status != XST_SUCCESS)
+		{
+			xil_printf("Couldn't start display during demo initialization%d\r\n", Status);
+			return;
+		}
+
+		//DemoPrintTest(dispCtrl.framePtr[dispCtrl.curFrame], dispCtrl.vMode.width, dispCtrl.vMode.height, dispCtrl.stride, DEMO_PATTERN_1);
+		fillInCardArray(); //for easy access
+
+		return;
+}
+
+void demoPrintTest(u8 *frame, u32 width, u32 height, u32 stride)
+{
+	u32 xcoi, ycoi;
+	u32 iPixelAddr;
+	u8 wRed, wBlue, wGreen;
+	u32 wCurrentInt;
+	double fRed, fBlue, fGreen, fColor;
+	u32 xLeft, xMid, xRight, xInt;
+	u32 yMid, yInt;
+	double xInc, yInc;
+
+	xInt = width / 4; //Four intervals, each with width/4 pixels
+	xLeft = xInt * 3;
+	xMid = xInt * 2 * 3;
+	xRight = xInt * 3 * 3;
+	xInc = 256.0 / ((double) xInt); //256 color intensities are cycled through per interval (overflow must be caught when color=256.0)
+
+	yInt = height / 2; //Two intervals, each with width/2 lines
+	yMid = yInt;
+	yInc = 256.0 / ((double) yInt); //256 color intensities are cycled through per interval (overflow must be caught when color=256.0)
+
+	fBlue = 0.0;
+	fRed = 256.0;
+	for(xcoi = 0; xcoi < (width*4); xcoi+=4)
+	{
+		/*
+		 * Convert color intensities to integers < 256, and trim values >=256
+		 */
+		wRed = (fRed >= 256.0) ? 255 : ((u8) fRed);
+		wBlue = (fBlue >= 256.0) ? 255 : ((u8) fBlue);
+		iPixelAddr = xcoi;
+		fGreen = 0.0;
+		for(ycoi = 0; ycoi < height; ycoi++)
+		{
+
+			wGreen = (fGreen >= 256.0) ? 255 : ((u8) fGreen);
+			frame[iPixelAddr] = wRed;
+			frame[iPixelAddr + 1] = wBlue;
+			frame[iPixelAddr + 2] = wGreen;
+			if (ycoi < yMid)
+			{
+				fGreen += yInc;
+			}
+			else
+			{
+				fGreen -= yInc;
+			}
+
+			/*
+			 * This pattern is printed one vertical line at a time, so the address must be incremented
+			 * by the stride instead of just 1.
+			 */
+			iPixelAddr += stride;
+		}
+
+		if (xcoi < xLeft)
+		{
+			fBlue = 0.0;
+			fRed -= xInc;
+		}
+		else if (xcoi < xMid)
+		{
+			fBlue += xInc;
+			fRed += xInc;
+		}
+		else if (xcoi < xRight)
+		{
+			fBlue -= xInc;
+			fRed -= xInc;
+		}
+		else
+		{
+			fBlue += xInc;
+			fRed = 0;
+		}
+	}
+	Xil_DCacheFlushRange((unsigned int) frame, DEMO_MAX_FRAME);
+}
+
+
+void testPattern(u8 *frame, u32 width, u32 height, u32 stride){
+	u32 xcoi, ycoi;
+	u32 iPixelAddr;
+	u8 wRed, wBlue, wGreen;
+	u32 wCurrentInt;
+	double fRed, fBlue, fGreen, fColor;
+	u32 xLeft, xMid, xRight, xInt;
+	u32 yMid, yInt;
+	double xInc, yInc;
+
+	xInt = width / 4; //Four intervals, each with width/4 pixels
+	xLeft = xInt * 3;
+	xMid = xInt * 2 * 3;
+	xRight = xInt * 3 * 3;
+	xInc = 256.0 / ((double) xInt); //256 color intensities are cycled through per interval (overflow must be caught when color=256.0)
+
+	yInt = height / 2; //Two intervals, each with width/2 lines
+	yMid = yInt;
+	yInc = 256.0 / ((double) yInt); //256 color intensities are cycled through per interval (overflow must be caught when color=256.0)
+
+	fBlue = 0.0;
+	fRed = 256.0;
+	for(xcoi = 0; xcoi < (width*4); xcoi+=4)
+	{
+		/*
+		 * Convert color intensities to integers < 256, and trim values >=256
+		 */
+		wRed = (fRed >= 256.0) ? 255 : ((u8) fRed);
+		wBlue = (fBlue >= 256.0) ? 255 : ((u8) fBlue);
+		iPixelAddr = xcoi;
+		fGreen = 0.0;
+		for(ycoi = 0; ycoi < height; ycoi++)
+		{
+
+			wGreen = (fGreen >= 256.0) ? 255 : ((u8) fGreen);
+			frame[iPixelAddr] = wRed;
+			frame[iPixelAddr + 1] = wBlue;
+			frame[iPixelAddr + 2] = wGreen;
+			if (ycoi < yMid)
+			{
+				fGreen += yInc;
+			}
+			else
+			{
+				fGreen -= yInc;
+			}
+
+			/*
+			 * This pattern is printed one vertical line at a time, so the address must be incremented
+			 * by the stride instead of just 1.
+			 */
+			iPixelAddr += stride;
+		}
+
+		if (xcoi < xLeft)
+		{
+			fBlue = 0.0;
+			fRed -= xInc;
+		}
+		else if (xcoi < xMid)
+		{
+			fBlue += xInc;
+			fRed += xInc;
+		}
+		else if (xcoi < xRight)
+		{
+			fBlue -= xInc;
+			fRed -= xInc;
+		}
+		else
+		{
+			fBlue += xInc;
+			fRed = 0;
+		}
+	}
+	/*
+	 * Flush the framebuffer memory range to ensure changes are written to the
+	 * actual memory, and therefore accessible by the VDMA.
+	 */
+	Xil_DCacheFlushRange((unsigned int) frame, DEMO_MAX_FRAME);
+	/*
+	 * Flush the framebuffer memory range to ensure changes are written to the
+	 * actual memory, and therefore accessible by the VDMA.
+	 */
+	Xil_DCacheFlushRange((unsigned int) frame, DEMO_MAX_FRAME);
+}
+
+void drawPixel(u8 *frame, u32 x, u32 y, unsigned int colour){
+	int offset = x * PIX_STRIDE + y * STRIDE;
+	frame[offset] = colour & 0xFF;
+	frame[offset + 1] = (colour >> 8) & 0xFF;
+	frame[offset + 2] = (colour >> 16) & 0xFF;
+
+}
+/*
+void drawSquare(u32 width, u32 height, u32 x, u32 y, unsigned int colour){
+	for (int i = 0; i < width; i++){
+		for (int j = 0; j < height; j++){
+			drawPixel(dispCtrl.framePtr[dispCtrl.curFrame], x + i, y + j, colour);
+		}
+	}
+	flush(dispCtrl.framePtr[dispCtrl.curFrame]);
+}
+*/
+//can specify frame
+void drawSquare2(u32 width, u32 height, u32 x, u32 y, unsigned int colour, u8* frame){
+	for (int i = 0; i < width; i++){
+		for (int j = 0; j < height; j++){
+			drawPixel(frame, x + i, y + j, colour);
+		}
+	}
+	//flush(frame);
+}
+
+void flush(u8 *frame){
+	Xil_DCacheFlushRange((unsigned int) frame, DEMO_MAX_FRAME);
+}
+
+void saveBackground(){
+	int blockwidth = dispCtrl.vMode.width/GRANUALITYWIDTH;
+	int blockheight = dispCtrl.vMode.height/GRANUALITYHEIGHT;
+
+
+	for(int i = 0; i < GRANUALITYHEIGHT; i++){
+		for(int j = 0; j < GRANUALITYWIDTH; j++){
+			if(graphicsArray[i][j] == 1){
+				drawSquare2(blockwidth,blockheight, j*blockwidth, i*blockheight, POKERGREEN, background);
+			}
+			if(graphicsArray[i][j] == 0){
+				drawSquare2(blockwidth,blockheight, j*blockwidth, i*blockheight, POKERRED, background);
+			}
+		}
+	}
+
+	//memcpy(dispCtrl.framePtr[nextFrame()], background, DEMO_MAX_FRAME);
+	//flush(dispCtrl.framePtr[nextFrame()]);
+}
+void updateBackground(){
+	memcpy(dispCtrl.framePtr[nextFrame()], background, DEMO_MAX_FRAME);
+	//flush(dispCtrl.framePtr[nextFrame()]);
+}
+
+void drawLayer(){
+	int blockwidth = dispCtrl.vMode.width/GRANUALITYWIDTH;
+	int blockheight = dispCtrl.vMode.height/GRANUALITYHEIGHT;
+
+
+	for(int i = 0; i < GRANUALITYHEIGHT; i++){
+		for(int j = 0; j < GRANUALITYWIDTH; j++){
+
+
+			if(locationArray[i][j] >= 53){ //items that are not cards
+				switch(locationArray[i][j]){
+				case 53: //player 1
+					if(currentPlayer == 0){
+						showICON(1, j,  i, 1);
+					}else{
+						showICON(1, j,  i, 0);
+					}
+					break;
+				case 54: //player 2
+					if(currentPlayer == 1){
+						showICON(1, j,  i, 1);
+					}else{
+						showICON(1, j,  i, 0);
+					}
+
+					break;
+				case 55: //player 3
+					if(currentPlayer == 2){
+						showICON(1, j,  i, 1);
+					}else{
+						showICON(1, j,  i, 0);
+					}
+
+					break;
+				case 56: //player 4
+					if(currentPlayer == 3){
+						showICON(1, j,  i, 1);
+					}else{
+						showICON(1, j,  i, 0);
+					}
+
+					break;
+				case 57: //player 5
+					if(currentPlayer == 4){
+						showICON(1, j,  i, 1);
+					}else{
+						showICON(1, j,  i, 0);
+					}
+
+					break;
+				case 58: //player 6
+					if(currentPlayer == 5){
+						showICON(1, j,  i, 1);
+					}else{
+						showICON(1, j,  i, 0);
+					}
+
+					break;
+				case 59: //player 7
+					if(currentPlayer == 6){
+						showICON(1, j,  i, 1);
+					}else{
+						showICON(1, j,  i, 0);
+					}
+
+					break;
+				case 60: //player 8
+					if(currentPlayer == 7){
+						showICON(1, j,  i, 1);
+					}else{
+						showICON(1, j,  i, 0);
+					}
+					break;
+				default:
+					break;
+				}
+			}
+			else if (locationArray[i][j] > 0){//show cards
+				if(locationArray[i][j] == 1){
+					drawSquare2(blockwidth*10,blockheight*10, j*blockwidth, i*blockheight, 0xFFFFFF, dispCtrl.framePtr[nextFrame()]);
+				}else{
+					showCard(locationArray[i][j], j,  i);
+				}
+			}
+		}
+	}
+	flush(dispCtrl.framePtr[nextFrame()]);
+}
+void placeMovableObject(int x, int y, int type){
+	location.x = x;
+	location.y = y;
+	locationArray[location.y][location.x] = type;
+}
+void placeObject(int x, int y, int type){
+	locationArray[y][x] = type;
+}
+
+void getInput(){
+	/* Wait for data on UART */
+	char userInput = 0;
+	int oldx = location.x;
+	int oldy = location.y;
+	int newx;
+	int newy;
+
+
+	//while (!XUartPs_IsReceiveData(UART_BASEADDR))
+	//{}
+
+	/* Store the first character in the UART receive FIFO and echo it */
+	if (XUartPs_IsReceiveData(UART_BASEADDR))
+	{
+		userInput = XUartPs_ReadReg(UART_BASEADDR, XUARTPS_FIFO_OFFSET);
+		xil_printf("\r\n%i", userInput);
+	}
+
+	if(userInput == 'd'){
+		newx = oldx + 10;
+		newy = oldy;
+
+		if(locationArray[newy][newx] == 0){
+			location.x = newx;
+			location.y = newy;
+			locationArray[oldy][oldx] = 0;
+			locationArray[newy][newx] = 1;
+		}else{
+
+		}
+
+	}else if(userInput == 'a'){
+		newx = oldx - 10;
+		newy = oldy;
+
+
+		if(locationArray[newy][newx] == 0){
+			location.x = newx;
+			location.y = newy;
+			locationArray[oldy][oldx] = 0;
+			locationArray[newy][newx] = 1;
+		}else{
+
+		}
+	}
+	else if(userInput == 's'){
+		newx = oldx;
+		newy = oldy + 10;
+		if(locationArray[newy][newx] == 0){
+			location.x = newx;
+			location.y = newy;
+			locationArray[oldy][oldx] = 0;
+			locationArray[newy][newx] = 1;
+		}else{
+
+		}
+	}
+	else if(userInput == 'w'){
+		newx = oldx;
+		newy = oldy - 10;
+		if(locationArray[newy][newx] == 0){
+			location.x = newx;
+			location.y = newy;
+			locationArray[oldy][oldx] = 0;
+			locationArray[newy][newx] = 1;
+		}else{
+
+		}
+	}
+	else if(userInput == 'n'){
+		nextPlayer();
+	}
+
+}
+void createBackground(){
+	int topBotGap = GRANUALITYHEIGHT/10;
+	int tablewidth = GRANUALITYWIDTH/2;
+	int tableheight = GRANUALITYHEIGHT - (topBotGap*2);
+
+
+
+	for(int i = 0; i < GRANUALITYHEIGHT; i++){
+		for(int j = 0; j < GRANUALITYWIDTH; j++){
+			if( i >= topBotGap && i <= GRANUALITYHEIGHT-topBotGap){
+				if( j >= ((GRANUALITYWIDTH-tablewidth)/2) && j <= ((GRANUALITYWIDTH-tablewidth)/2+tablewidth)){
+					graphicsArray[i][j] = 1;
+				}
+			}
+		}
+		if(i <= GRANUALITYHEIGHT/2 && tablewidth < GRANUALITYWIDTH){
+			tablewidth++;
+		}
+		if(i > GRANUALITYHEIGHT/2 && tablewidth > GRANUALITYWIDTH/2){
+			tablewidth--;
+		}
+	}
+}
+void swapFrame(){
+	int status;
+	if(dispCtrl.curFrame == 0){
+		status = DisplayChangeFrame(&dispCtrl, 1);
+	}else {
+		status = DisplayChangeFrame(&dispCtrl, 0);
+	}
+}
+int nextFrame(){
+	if(dispCtrl.curFrame == 0){
+		return 1;
+	}else{
+		return 0;
+	}
+}
+void showCard(int cardVal, int x, int y){
+	int blockwidth = dispCtrl.vMode.width/GRANUALITYWIDTH;
+	int blockheight = dispCtrl.vMode.height/GRANUALITYHEIGHT;
+
+	printf("\ncardVal %d", cardVal);
+	switch(cardVal){
+		case 3:
+			for(int i = 0; i < CardHeight; i++){
+				for(int j = 0; j < CardWidth; j++){
+					if(cardGraphicArray[cardVal][i][j] == 0){
+						drawSquare2(blockwidth,blockheight, (x + j)*blockwidth, (y + i)*blockheight, 0xFFFFFF, dispCtrl.framePtr[nextFrame()]);
+					}else if(cardGraphicArray[cardVal][i][j] == 1){
+						drawSquare2(blockwidth,blockheight, (x + j)*blockwidth, (y + i)*blockheight, 0x000000, dispCtrl.framePtr[nextFrame()]);
+					}
+				}
+			}
+		 break;
+	}
+}
+void showICON(int player,int x, int y, int highlight){
+	int blockwidth = dispCtrl.vMode.width/GRANUALITYWIDTH;
+	int blockheight = dispCtrl.vMode.height/GRANUALITYHEIGHT;
+	int backgroundcolor = 0xFFFFFF;
+
+	if(highlight == 1){//change to yellow if highlighted
+		backgroundcolor = 0xFFFF00;
+	}
+
+	switch(player){
+		case 1:
+			for(int i = 0; i < 30; i++){
+				for(int j = 0; j < 30; j++){
+					if(player1ICON[i][j] == 0){
+						drawSquare2(blockwidth,blockheight, (x + j)*blockwidth, (y + i)*blockheight, backgroundcolor, dispCtrl.framePtr[nextFrame()]);
+					}else if(player1ICON[i][j] == 1){
+						drawSquare2(blockwidth,blockheight, (x + j)*blockwidth, (y + i)*blockheight, 0x000000, dispCtrl.framePtr[nextFrame()]);
+					}
+				}
+			}
+		 break;
+	}
+}
+void arrayContents(){
+	printf("\r\n#####location#######\r\n");
+	for(int i = 0; i < GRANUALITYHEIGHT; i++){
+			for(int j = 0; j < GRANUALITYWIDTH; j++){
+				printf("%d", locationArray[i][j]);
+			}
+			printf("\r\n");
+		}
+}
+//for testing player highlighting
+void nextPlayer(){
+	if(currentPlayer < (AmountOfPlayers - 1)){
+		currentPlayer++;
+	}else{
+		currentPlayer = 0;
+	}
+}
+void initializePlayerEmblems(){
+	switch(AmountOfPlayers){
+		case 8:
+			//icon8
+			placeObject(640 - 15 - 30, 540 - 150 - 30, 60);
+		case 7:
+			//icon7
+			placeObject(640 - 15 - 30, 150, 59);
+		case 6:
+			//icon6
+			placeObject(375, 15, 58);
+		case 5:
+			//icon5
+			placeObject(225, 15, 57);
+		case 4:
+			//icon4
+			placeObject(20, 150, 56);
+		case 3:
+			//icon3
+			placeObject(20, 540 - 150 - 30, 55);
+		case 2:
+			//icon2
+			placeObject(225, 540 - 30 - 15, 54);
+		case 1:
+			//icon1
+			placeObject(375, 540 - 30 - 15, 53);
+		default :
+			break;
+	}
+}
+
+void fillInCardArray(){
+	memcpy(cardGraphicArray[0], clover2 ,sizeof(clover2));
+	memcpy(cardGraphicArray[1], clover2 ,sizeof(clover2));
+	memcpy(cardGraphicArray[2], clover2 ,sizeof(clover2));
+	memcpy(cardGraphicArray[rankSuitToIndexv2(1, 3)], aceOfDiamonds ,sizeof(aceOfDiamonds));
+}
+
+void setPlayerCards(int player, int rank, int suit, int cardNum){
+	int x;
+	int y;
+	if(cardNum == 1){
+		x   = PlayerCardCoords[player][0];
+		y   = PlayerCardCoords[player][1];
+	}else{
+		x   = PlayerCardCoords[player][2];
+		y   = PlayerCardCoords[player][3];
+	}
+
+	printf("\r\n player %d  coords : %d -- %d", player, x, y);
+	printf("\r\n above rankSuit to index");
+	printf("\r\nrankSuit to index %d",rankSuitToIndex(rank, suit) );
+
+	placeObject(x, y, rankSuitToIndex(rank, suit));
+}
+int rankSuitToIndexv2(int rank, int suit){
+	return (rank-1)+(suit-1)*13
+}
+
+//function that converts between rank/suit and item symbol
+int rankSuitToIndex(int rank, int suit){
+	printf("\r\n inside switch case");
+	switch(rank){
+	case 1:
+		switch(suit){
+		case HEARTS:
+			return 1;
+			break;
+		case CLUBS:
+			return 2;
+			break;
+		case DIAMONDS:
+			return 3;
+			break;
+		case SPADES:
+			return 4;
+			break;
+		}
+		break;
+	case 2:
+		switch(suit){
+		case HEARTS:
+			return 5;
+			break;
+		case CLUBS:
+			return 6;
+			break;
+		case DIAMONDS:
+			return 7;
+			break;
+		case SPADES:
+			return 8;
+			break;
+		}
+		break;
+	case 3:
+		switch(suit){
+		case HEARTS:
+			return 9;
+			break;
+		case CLUBS:
+			return 10;
+			break;
+		case DIAMONDS:
+			return 11;
+			break;
+		case SPADES:
+			return 12;
+			break;
+		}
+		break;
+	case 4:
+		switch(suit){
+		case HEARTS:
+			return 13;
+			break;
+		case CLUBS:
+			return 14;
+			break;
+		case DIAMONDS:
+			return 15;
+			break;
+		case SPADES:
+			return 16;
+			break;
+		}
+		break;
+	case 5:
+		switch(suit){
+		case HEARTS:
+			return 17;
+			break;
+		case CLUBS:
+			return 18;
+			break;
+		case DIAMONDS:
+			return 19;
+			break;
+		case SPADES:
+			return 20;
+			break;
+		}
+		break;
+	case 6:
+		switch(suit){
+		case HEARTS:
+			return 21;
+			break;
+		case CLUBS:
+			return 22;
+			break;
+		case DIAMONDS:
+			return 23;
+			break;
+		case SPADES:
+			return 24;
+			break;
+		}
+		break;
+	case 7:
+		switch(suit){
+		case HEARTS:
+			return 25;
+			break;
+		case CLUBS:
+			return 26;
+			break;
+		case DIAMONDS:
+			return 27;
+			break;
+		case SPADES:
+			return 28;
+			break;
+		}
+		break;
+	case 8:
+		switch(suit){
+		case HEARTS:
+			return 29;
+			break;
+		case CLUBS:
+			return 30;
+			break;
+		case DIAMONDS:
+			return 31;
+			break;
+		case SPADES:
+			return 32;
+			break;
+		}
+		break;
+	case 9:
+		switch(suit){
+		case HEARTS:
+			return 33;
+			break;
+		case CLUBS:
+			return 34;
+			break;
+		case DIAMONDS:
+			return 35;
+			break;
+		case SPADES:
+			return 36;
+			break;
+		}
+		break;
+	case 10:
+		switch(suit){
+		case HEARTS:
+			return 37;
+			break;
+		case CLUBS:
+			return 38;
+			break;
+		case DIAMONDS:
+			return 39;
+			break;
+		case SPADES:
+			return 40;
+			break;
+		}
+		break;
+	case 11:
+		switch(suit){
+		case HEARTS:
+			return 41;
+			break;
+		case CLUBS:
+			return 42;
+			break;
+		case DIAMONDS:
+			return 43;
+			break;
+		case SPADES:
+			return 44;
+			break;
+		}
+		break;
+	case 12:
+		switch(suit){
+		case HEARTS:
+			return 45;
+			break;
+		case CLUBS:
+			return 46;
+			break;
+		case DIAMONDS:
+			return 47;
+			break;
+		case SPADES:
+			return 48;
+			break;
+		}
+		break;
+	case 13:
+		switch(suit){
+		case HEARTS:
+			return 49;
+			break;
+		case CLUBS:
+			return 50;
+			break;
+		case DIAMONDS:
+			return 51;
+			break;
+		case SPADES:
+			return 52;
+			break;
+		}
+		break;
+	}
+	return 0;//placeholder card
+}
+
+
+
+

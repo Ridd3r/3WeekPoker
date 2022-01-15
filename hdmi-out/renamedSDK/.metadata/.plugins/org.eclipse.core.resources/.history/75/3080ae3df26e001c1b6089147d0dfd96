@@ -1,0 +1,85 @@
+/*
+ * main.c
+ Version 1.0
+ *
+ *  Created on: Jan 3, 2022
+ *      Author: gurk
+ */
+#include "graphics.h"
+#include "display_ctrl/display_ctrl.h"
+#include "math.h"
+#include "timer_ps/timer_ps.h"
+#include <stdio.h>
+
+
+/*DisplayCtrl dispCtrl;
+XAxiVdma vdma;*/
+
+int main(){
+	initialize();
+	//demoPrintTest(dispCtrl.framePtr[dispCtrl.curFrame], dispCtrl.vMode.width, dispCtrl.vMode.height, dispCtrl.stride);
+	//test1(dispCtrl.framePtr[dispCtrl.curFrame], dispCtrl.vMode.width, dispCtrl.vMode.height, dispCtrl.stride);
+	//drawSquare(dispCtrl.framePtr[dispCtrl.curFrame], 200, 300, 500, 0);
+/*	drawPixel(dispCtrl.framePtr[dispCtrl.curFrame], 10, 20, 0x00FF00);
+	drawPixel(dispCtrl.framePtr[dispCtrl.curFrame], 15, 25, 0xFFFF00);
+	drawPixel(dispCtrl.framePtr[dispCtrl.curFrame], 20, 30, 0xFF0000);
+	drawPixel(dispCtrl.framePtr[dispCtrl.curFrame], 25,35, 0x0000FF);*/
+
+	//testPattern(dispCtrl.framePtr[dispCtrl.curFrame], dispCtrl.vMode.width, dispCtrl.vMode.height, dispCtrl.stride);
+
+	//drawSquare(25, 30, 70, 80, 0xFFFF00);
+
+		placeMovableObject(1, 2, 1);
+
+/*
+		//player 1
+		placeObject(350, (540-(75+60)), 2);
+		placeObject(400, (540-(75+60)), 2);
+		//player 2
+		placeObject(200, (540-(75+60)), 2);
+		placeObject(250, (540-(75+60)), 2);
+
+		//player 3
+		placeObject(85, (540-(170+60)), 2);
+		placeObject(135, (540-(170+60)), 2);
+
+		//player 4 cards
+		placeObject(85, 170, 2);
+		placeObject(135, 170, 2);
+
+		//player 5
+		placeObject(200, 75, 2);
+		placeObject(250, 75, 2);
+
+		//player 6
+		placeObject(350, 75, 2);
+		placeObject(400, 75, 2);
+
+		//player 7
+		placeObject((640 - 85 - 30), 170, 2);
+		placeObject((640 - 135 - 30), 170, 2);
+
+		//player 8
+		placeObject((640 - 85 - 30), (540-(170+60)), 2);
+		placeObject((640 - 135 - 30), (540-(170+60)), 2);
+*/
+
+		//arrayContents();
+		initializePlayerEmblems();
+		createBackground();
+		saveBackground();
+
+		setPlayerCards(0, 1, 3, 1);
+		setPlayerCards(0, 1, 3, 2);
+		//placeObject(350, (540-(75+60)), 3);
+		printf("\n\r done setting card");
+		while(1){
+			updateBackground();
+			drawLayer();
+			swapFrame();
+			getInput();
+		}
+	return 0;
+}
+
+

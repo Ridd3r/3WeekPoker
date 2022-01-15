@@ -1,0 +1,128 @@
+/*
+ * main.c
+ Version 1.0
+ *
+ *  Created on: Jan 3, 2022
+ *      Author: gurk
+ */
+#include "graphics.h"
+#include "display_ctrl/display_ctrl.h"
+#include "math.h"
+#include "timer_ps/timer_ps.h"
+#include <stdio.h>
+
+
+/*DisplayCtrl dispCtrl;
+XAxiVdma vdma;*/
+
+int main(){
+	initialize();
+	//demoPrintTest(dispCtrl.framePtr[dispCtrl.curFrame], dispCtrl.vMode.width, dispCtrl.vMode.height, dispCtrl.stride);
+	//test1(dispCtrl.framePtr[dispCtrl.curFrame], dispCtrl.vMode.width, dispCtrl.vMode.height, dispCtrl.stride);
+	//drawSquare(dispCtrl.framePtr[dispCtrl.curFrame], 200, 300, 500, 0);
+/*	drawPixel(dispCtrl.framePtr[dispCtrl.curFrame], 10, 20, 0x00FF00);
+	drawPixel(dispCtrl.framePtr[dispCtrl.curFrame], 15, 25, 0xFFFF00);
+	drawPixel(dispCtrl.framePtr[dispCtrl.curFrame], 20, 30, 0xFF0000);
+	drawPixel(dispCtrl.framePtr[dispCtrl.curFrame], 25,35, 0x0000FF);*/
+
+	//testPattern(dispCtrl.framePtr[dispCtrl.curFrame], dispCtrl.vMode.width, dispCtrl.vMode.height, dispCtrl.stride);
+
+	//drawSquare(25, 30, 70, 80, 0xFFFF00);
+
+		placeMovableObject(1, 2, 1);
+
+/*
+		//player 1
+		placeObject(350, (540-(75+60)), 2);
+		placeObject(400, (540-(75+60)), 2);
+		//player 2
+		placeObject(200, (540-(75+60)), 2);
+		placeObject(250, (540-(75+60)), 2);
+
+		//player 3
+		placeObject(85, (540-(170+60)), 2);
+		placeObject(135, (540-(170+60)), 2);
+
+		//player 4 cards
+		placeObject(85, 170, 2);
+		placeObject(135, 170, 2);
+
+		//player 5
+		placeObject(200, 75, 2);
+		placeObject(250, 75, 2);
+
+		//player 6
+		placeObject(350, 75, 2);
+		placeObject(400, 75, 2);
+
+		//player 7
+		placeObject((640 - 85 - 30), 170, 2);
+		placeObject((640 - 135 - 30), 170, 2);
+
+		//player 8
+		placeObject((640 - 85 - 30), (540-(170+60)), 2);
+		placeObject((640 - 135 - 30), (540-(170+60)), 2);
+*/
+
+		//arrayContents();
+		initializePlayerEmblems();
+		createBackground();
+		saveBackground();
+
+		setPlayerCards(0, 1, 3, 1);
+		setPlayerCards(0, 2, 3, 2);
+
+		setPlayerCards(1, 3, 3, 1);
+		setPlayerCards(1, 4, 3, 2);
+
+		setPlayerCards(2, 5, 3, 1);
+		setPlayerCards(2, 6, 3, 2);
+
+		setPlayerCards(3, 7, 3, 1);
+		setPlayerCards(3, 9, 3, 2);
+
+		setPlayerCards(4, 1, 3, 1);
+		setPlayerCards(4, 2, 3, 2);
+
+		setPlayerCards(5, 1, 3, 1);
+		setPlayerCards(5, 2, 3, 2);
+
+		setPlayerCards(6, 1, 3, 1);
+		setPlayerCards(6, 2, 3, 2);
+
+		setPlayerCards(6, 1, 3, 1);
+		setPlayerCards(6, 2, 3, 2);
+
+		setPlayerCards(7, 1, 3, 1);
+		setPlayerCards(7, 2, 3, 2);
+
+		//player chips
+		placeObject(450, 405, 61);//p2
+		placeObject(300-15, 405, 61);//p1
+
+		placeObject(450, 540-405-60, 61);//p7
+		placeObject(300-15, 540-405-60, 61);//p6
+
+		placeObject(640 - 450 - 60, 405, 61);//p3
+		placeObject(640 - 450 - 60, 540-405-60, 61);//p5
+
+		placeObject(85 + 30, 155 + 6030, 61);//p4
+
+
+		//initial draw, rest is handled by interrupts
+		updateBackground();
+		drawLayer();
+		startOrStopScreenUpdate(1);//enable interrupts
+		while(1){
+			/*updateBackground();
+			drawLayer();
+			TimerDelay(25000);
+			swapFrame();*/
+
+			getInput();
+			startOrStopScreenUpdate(1);
+		}
+	return 0;
+}
+
+
